@@ -5,6 +5,8 @@ GEM
     rack (2.2.3)
     roda (2.1.0)
       rack
+    sequel (5.46.0)
+    sqlite3 (1.4.2)
     tilt (2.0.10)
 
 PLATFORMS
@@ -13,6 +15,8 @@ PLATFORMS
 DEPENDENCIES
   erubis (~> 2.7.0)
   roda (~> 2.1.0)
+  sequel
+  sqlite3 (~> 1.4.2)
   tilt (~> 2.0.1)
 
 BUNDLED WITH
