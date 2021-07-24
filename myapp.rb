@@ -59,7 +59,7 @@ class Myapp < Roda
         view("users/new")
       end
 
-      r.get ":id" do |id|
+      r.get ":id" do |id|    # Не работает маршрут: /users/1 и т.д.
         @user = User[id]
         view("users/show")
       end
