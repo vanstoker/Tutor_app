@@ -1,4 +1,5 @@
 class User < Sequel::Model
+  one_to_many :posts, on_delete: :cascade
   attr_accessor :password, :password_confirmation
 
   def validate
@@ -14,8 +15,11 @@ class User < Sequel::Model
     encrypt_password
   end
 
-# Этот метод был в составе private, но при таком раскладе сервак выдавал ошибку.
-# Верно ли вынести этот метод из private?
+  def self.authenticate(email, password)
+    user = filter(Sequel.function(:lower, :email) => Sequel.function(:lower, email)).first
+    user && user.has_password?(password) ? user : nil
+  end
+
   def has_password?(password)
     BCrypt::Password.new(self.password_hash) == password
   end
@@ -25,10 +29,4 @@ private
   def encrypt_password
     self.password_hash = BCrypt::Password.create(password)
   end
-
-  def self.authenticate(email, password)
-    user = filter(Sequel.function(:lower, :email) => Sequel.function(:lower, email)).first
-    user && user.has_password?(password) ? user : nil
-  end
-
 end
