@@ -17,7 +17,7 @@ class Myapp < Roda
 
 	use Rack::Session::Cookie, secret: "ome_nice_long_random_string_DSKJH4378EYR7EGKUFH", key: "_myapp_session"
 	use Rack::Protection
-	plugin :csrf
+	# plugin :csrf
 
   
 	require './models/user.rb'
@@ -26,11 +26,11 @@ class Myapp < Roda
 	plugin :static, ["/images", "/css", "/js"]
 	plugin :render
 	plugin :head
+  # plugin :json
+  plugin :json_parser
 
 	route do |r|
-    binding.irb
 		r.root do
-      # binding.irb
       @posts = Post.reverse_order(:created_at)
 			view("homepage")
 		end
@@ -81,12 +81,15 @@ class Myapp < Roda
         end
 
         r.post do
-          binding.irb
-          @user = User.new(r["user"])
+          # binding.irb
+          @user = User.new(r.params["user"])
           if @user.valid? && @user.save
-            r.redirect "/users"
+            # r.redirect "/users"
+            @user.to_hash.to_json
           else
-            view("users/new")
+            # view("users/new")
+            response.status = 400
+            @user.errors.to_json
           end
         end
       end

@@ -11,8 +11,16 @@ describe do
   end
 
   it 'Create user' do
-    post '/users'
-    binding.irb
+    user_params = {
+      user: {
+        name: 'Cop',
+        email: 'cop@hot.com',
+        password: 'badcop',
+        password_confirmation: 'badcop'
+      }
+    }
+    # binding.irb
+    post '/users', user_params
     expect(last_response).to be_ok
   end
 end
