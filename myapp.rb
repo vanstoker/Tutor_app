@@ -3,11 +3,13 @@ require "sequel"
 require "bcrypt"
 require "rack/protection"
 
-database = "myapp_development"
+# binding.irb
+database = $global == :test ? "myapp_test" : "myapp_development"
 user = "postgres"
 password = "point"
 DB = Sequel.connect(adapter: "postgres", database: database, host: "127.0.0.1",
 										user: user, password: password)
+
 
 class Myapp < Roda
 	Sequel::Model.plugin :validation_helpers
@@ -17,6 +19,7 @@ class Myapp < Roda
 	use Rack::Protection
 	plugin :csrf
 
+  
 	require './models/user.rb'
   require './models/post.rb'
 
@@ -25,13 +28,16 @@ class Myapp < Roda
 	plugin :head
 
 	route do |r|
+    binding.irb
 		r.root do
+      # binding.irb
       @posts = Post.reverse_order(:created_at)
 			view("homepage")
 		end
 
 		r.get "about" do
-			view("about")
+			render("about")
+      #view("about")
 		end
 
 		r.get "contact" do
@@ -62,6 +68,39 @@ class Myapp < Roda
       view("posts/show")
     end
 
+    r.on "users" do
+      r.get "new" do
+        @user = User.new
+        view("users/new")
+      end
+
+      r.is do
+        r.get do
+          @users = User.order(:id)
+          view("users/index")
+        end
+
+        r.post do
+          binding.irb
+          @user = User.new(r["user"])
+          if @user.valid? && @user.save
+            r.redirect "/users"
+          else
+            view("users/new")
+          end
+        end
+      end
+
+      r.on Integer do |id|
+        r.is do
+          r.get do
+            @user = User[id]
+            view("users/show")
+          end
+        end
+      end
+    end
+
     unless session[:user_id]
       r.redirect "/login"
     end
@@ -82,7 +121,7 @@ class Myapp < Roda
         end
       end
 
-      r.on ":id" do |id|
+      r.on Integer do |id|
         @post = Post[id]
         r.get "edit" do
           view("posts/edit")
@@ -95,39 +134,6 @@ class Myapp < Roda
           end
         end
       end
-    end
-
-    r.on "users" do
-    	r.get "new" do
-        @user = User.new
-        view("users/new")
-      end
-
-      r.is do
-        r.get do
-          @users = User.order(:id)
-          view("users/index")
-        end
-
-        r.post do
-          @user = User.new(r["user"])
-          if @user.valid? && @user.save
-            r.redirect "/users"
-          else
-            view("users/new")
-          end
-        end
-      end
-
-      r.on Integer do |id|
-        r.is do
-          r.get do
-            @user = User[id]
-            view("users/show")
-          end
-        end
-      end
-
     end
 	end
 end
