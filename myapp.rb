@@ -1,9 +1,9 @@
-require "roda"
-require "sequel"
-require "bcrypt"
-require "rack/protection"
+require 'roda'
+require 'sequel'
+require 'bcrypt'
+require 'rack/protection'
+require 'pry'
 
-# binding.irb
 database = $global == :test ? "myapp_test" : "myapp_development"
 user = "postgres"
 password = "point"
@@ -17,7 +17,7 @@ class Myapp < Roda
 
 	use Rack::Session::Cookie, secret: "ome_nice_long_random_string_DSKJH4378EYR7EGKUFH", key: "_myapp_session"
 	use Rack::Protection
-	# plugin :csrf
+# plugin :csrf
 
   
 	require './models/user.rb'
@@ -26,7 +26,7 @@ class Myapp < Roda
 	plugin :static, ["/images", "/css", "/js"]
 	plugin :render
 	plugin :head
-  # plugin :json
+# plugin :json
   plugin :json_parser
 
 	route do |r|
@@ -74,14 +74,17 @@ class Myapp < Roda
         view("users/new")
       end
 
+# --- Show all users
       r.is do
         r.get do
           @users = User.order(:id)
-          view("users/index")
+        # binding.pry
+        # view("users/index")
+          @users.map { |user| [user.name, user.email] }.to_h.to_json
         end
 
+# --- Create new user
         r.post do
-          # binding.irb
           @user = User.new(r.params["user"])
           if @user.valid? && @user.save
             # r.redirect "/users"
