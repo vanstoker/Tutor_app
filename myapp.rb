@@ -87,10 +87,10 @@ class Myapp < Roda
         r.post do
           @user = User.new(r.params["user"])
           if @user.valid? && @user.save
-            # r.redirect "/users"
+          # r.redirect "/users"
             @user.to_hash.to_json
           else
-            # view("users/new")
+          # view("users/new")
             response.status = 400
             @user.errors.to_json
           end
@@ -101,7 +101,8 @@ class Myapp < Roda
         r.is do
           r.get do
             @user = User[id]
-            view("users/show")
+          # view("users/show")
+            @user.to_hash.to_json
           end
         end
       end
