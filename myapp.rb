@@ -51,7 +51,10 @@ class Myapp < Roda
     r.post "login" do
       if user = User.authenticate(r["email"], r["password"])
         session[:user_id] = user.id
-        r.redirect "/"
+        binding.pry
+        response.status = 200
+        'ok'
+        # r.redirect "/"
       else
         r.redirect "/login"
       end
@@ -117,12 +120,14 @@ class Myapp < Roda
         @post = Post.new
         view("posts/new")
       end
-      r.post do
-        @post = Post.new(r["post"])
-        @post.user = User[session[:user_id]]
 
+      r.post do
+        @post = Post.new(r.params["post"])
+        binding.pry
+        @post.user = User[session[:user_id]]
         if @post.valid? && @post.save
-          r.redirect "/"
+          # r.redirect "/"
+          @post.to_hash.to_json
         else
           view("posts/new")
         end

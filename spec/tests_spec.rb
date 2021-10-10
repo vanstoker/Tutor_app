@@ -23,4 +23,18 @@ describe do
     post '/users', user_params
     expect(last_response).to be_ok
   end
+
+# --- Testing to create post
+  it 'Testing create post' do
+    
+  end
+
+# --- Testing login
+  describe do
+    let!(:user) { create(:user) }
+    it 'Testing loggin' do
+      post '/login', { email: 'kosti@mail.com', password: 'point'  }
+      expect(last_response).to be_ok
+    end
+  end
 end
