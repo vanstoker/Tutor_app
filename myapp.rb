@@ -32,6 +32,10 @@ class Myapp < Roda
 	route do |r|
 		r.root do
       @posts = Post.reverse_order(:created_at)
+      binding.pry
+      @posts.map do |post|
+        {title: post.title, content: post.content}
+      end.to_json
 			# view("homepage")
 		end
 
