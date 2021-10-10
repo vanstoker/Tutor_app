@@ -32,20 +32,20 @@ class Myapp < Roda
 	route do |r|
 		r.root do
       @posts = Post.reverse_order(:created_at)
-			view("homepage")
+			# view("homepage")
 		end
 
 		r.get "about" do
-			render("about")
-      #view("about")
+			# render("about")
+      # view("about")
 		end
 
 		r.get "contact" do
-			view("contact")
+			# view("contact")
 		end
 
 		r.get "login" do
-      view("login")
+      # view("login")
     end
 
     r.post "login" do
@@ -56,33 +56,32 @@ class Myapp < Roda
         'ok'
         # r.redirect "/"
       else
-        r.redirect "/login"
+        # r.redirect "/login"
       end
     end
 
     r.post "logout" do
       session.clear
-      r.redirect "/"
+      # r.redirect "/"
     end
 
     r.get /posts\/([0-9]+)/ do |id|
       @post = Post[id]
       @user_name = @post.user.name
-      view("posts/show")
+      # view("posts/show")
     end
 
     r.on "users" do
       r.get "new" do
         @user = User.new
-        view("users/new")
+        # view("users/new")
       end
 
 # --- Show all users
       r.is do
         r.get do
           @users = User.order(:id)
-        # binding.pry
-        # view("users/index")
+          # view("users/index")
           @users.map { |user| [user.name, user.email] }.to_h.to_json
         end
 
@@ -90,10 +89,10 @@ class Myapp < Roda
         r.post do
           @user = User.new(r.params["user"])
           if @user.valid? && @user.save
-          # r.redirect "/users"
+            # r.redirect "/users"
             @user.to_hash.to_json
           else
-          # view("users/new")
+            # view("users/new")
             response.status = 400
             @user.errors.to_json
           end
@@ -104,7 +103,7 @@ class Myapp < Roda
         r.is do
           r.get do
             @user = User[id]
-          # view("users/show")
+            # view("users/show")
             @user.to_hash.to_json
           end
         end
@@ -112,13 +111,13 @@ class Myapp < Roda
     end
 
     unless session[:user_id]
-      r.redirect "/login"
+      # r.redirect "/login"
     end
 
     r.on "posts" do
       r.get "new" do
         @post = Post.new
-        view("posts/new")
+        # view("posts/new")
       end
 
       r.post do
@@ -129,20 +128,20 @@ class Myapp < Roda
           # r.redirect "/"
           @post.to_hash.to_json
         else
-          view("posts/new")
+          # view("posts/new")
         end
       end
 
       r.on Integer do |id|
         @post = Post[id]
         r.get "edit" do
-          view("posts/edit")
+          # view("posts/edit")
         end
         r.post do
           if @post.update(r["post"])
-            r.redirect "/posts/#{@post.id}"
+            # r.redirect "/posts/#{@post.id}"
           else
-            view("posts/edit")
+            # view("posts/edit")
           end
         end
       end
