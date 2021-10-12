@@ -1,14 +1,23 @@
 describe do
-  it do
-    get '/'
-    # binding.irb
-    expect(last_response).to be_ok
+  
+  describe do
+    let!(:post) { create(:post) }
+    it 'Testing root route' do
+      get '/'
+      body = JSON.parse(last_response.body)
+      expect(body.first["title"]).to eq(post.title)
+    end
   end
 
-  it 'Going to \'Contact\' page' do
-    get '/contact'
-    expect(last_response).to be_ok
+  describe do
+    it 'Testing logout' do
+      post '/logout'
+      session = JSON.parse(last_response.session)
+      expect(session.first["user_id"]).to be nil
+    end
   end
+
+
 
   it 'Create user' do
     user_params = {
@@ -19,7 +28,6 @@ describe do
         password_confirmation: 'badcop'
       }
     }
-    # binding.irb
     post '/users', user_params
     expect(last_response).to be_ok
   end
@@ -33,7 +41,7 @@ describe do
   describe do
     let!(:user) { create(:user) }
     it 'Testing loggin' do
-      post '/login', { email: 'kosti@mail.com', password: 'point'  }
+      post '/login', { email: user.email, password: user.password  }
       expect(last_response).to be_ok
     end
   end

@@ -4,6 +4,7 @@ require 'database_cleaner/sequel'
 require File.expand_path("../../myapp", __FILE__)
 require 'factory_bot'
 require File.expand_path("../../spec/factories/user", __FILE__)
+require File.expand_path("../../spec/factories/post", __FILE__)
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
