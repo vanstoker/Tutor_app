@@ -12,8 +12,10 @@ describe do
   describe do
     it 'Testing logout' do
       post '/logout'
-      session = JSON.parse(last_response.session)
-      expect(session.first["user_id"]).to be nil
+      session = session
+      # session = session(:session_id)
+      binding.pry
+      expect(session[:user_id]).to be_empty
     end
   end
 

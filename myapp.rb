@@ -38,7 +38,7 @@ class Myapp < Roda
 		end
 
     r.post "logout" do
-      binding.pry
+      # binding.pry
       session.clear
       binding.pry
     end
@@ -49,7 +49,6 @@ class Myapp < Roda
         session[:user_id] = user.id
         response.status = 200           # - not nessesery string, can be deleted
         user.to_hash.to_json            # - response user to browser
-        binding.pry
       else
         response.status = 401
       end
